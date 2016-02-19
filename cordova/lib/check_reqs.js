@@ -105,7 +105,7 @@ module.exports.check_java = function() {
             }
         } else {
             if (javacPath) {
-                var msg = 'Failed to find \'JAVA_HOME\' environment variable. Try setting setting it manually.';
+                var msg = 'Failed to find \'JAVA_HOME\' environment variable. Try setting it manually.';
                 // OS X has a command for finding JAVA_HOME.
                 if (fs.existsSync('/usr/libexec/java_home')) {
                     return tryCommand('/usr/libexec/java_home', msg)
@@ -165,6 +165,7 @@ module.exports.check_android = function() {
         var androidCmdPath = forgivingWhichSync('android');
         var adbInPath = !!forgivingWhichSync('adb');
         var hasAndroidHome = !!process.env['ANDROID_HOME'] && fs.existsSync(process.env['ANDROID_HOME']);
+        var msg = 'Failed to find \'ANDROID_HOME\' environment variable. Try setting it manually.\n';
         function maybeSetAndroidHome(value) {
             if (!hasAndroidHome && fs.existsSync(value)) {
                 hasAndroidHome = true;
@@ -210,7 +211,7 @@ module.exports.check_android = function() {
                 process.env['ANDROID_HOME'] = grandParentDir;
                 hasAndroidHome = true;
             } else {
-                throw new Error('Failed to find \'ANDROID_HOME\' environment variable. Try setting setting it manually.\n' +
+                throw new Error(msg +
                     'Detected \'android\' command at ' + parentDir + ' but no \'tools\' directory found near.\n' +
                     'Try reinstall Android SDK or update your PATH to include path to valid SDK directory.');
             }
@@ -219,7 +220,7 @@ module.exports.check_android = function() {
             process.env['PATH'] += path.delimiter + path.join(process.env['ANDROID_HOME'], 'platform-tools');
         }
         if (!process.env['ANDROID_HOME']) {
-            throw new Error('Failed to find \'ANDROID_HOME\' environment variable. Try setting setting it manually.\n' +
+            throw new Error(msg +
                 'Failed to find \'android\' command in your \'PATH\'. Try update your \'PATH\' to include path to valid SDK directory.');
         }
         if (!fs.existsSync(process.env['ANDROID_HOME'])) {
